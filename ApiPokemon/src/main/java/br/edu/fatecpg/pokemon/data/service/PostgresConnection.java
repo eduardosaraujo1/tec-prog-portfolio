@@ -14,8 +14,7 @@ public class PostgresConnection {
         String database
     ) throws SQLException {
         String jdbcURL = "jdbc:postgresql://localhost:5432/" + database;
-        // String user = "admin";
-        // String passwd = "admin";
+
         return DriverManager.getConnection(jdbcURL, user, password);
     }
 }
