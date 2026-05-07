@@ -6,7 +6,7 @@ Repositório dedicado a centralizar todas as atividades de Técnicas de Programa
 - `tp1/bim2/atv-heranca`
 - `tp2/bim1/records`
 
-Anteriormente, cada atividade era colocada em uma pasta dentro da branch `main`. A fim de manter compatibilidade e não quebrar os links de atividade enviados anteriormente, a branch padrão tornou-se a [trunk](/tree/dev).
+Anteriormente, cada atividade era colocada em uma pasta dentro da branch `main`. A fim de manter compatibilidade e não quebrar os links de atividade enviados anteriormente, a branch padrão tornou-se a [trunk](https://github.com/eduardosaraujo1/tec-prog-portifolio/tree/trunk).
 
 Com essa alteração, novas atividades poderão ser enviadas por links, sem tornar a estrutura de arquivos rígida, e com verificação para correção tão simples quanto:
 
