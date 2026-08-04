@@ -1,4 +1,4 @@
-package br.edu.fatecpg.review.view;
+package br.edu.fatecpg.restaurante.view;
 
 public class Main {
 
