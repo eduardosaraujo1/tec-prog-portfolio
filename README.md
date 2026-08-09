@@ -15,6 +15,7 @@ Anteriormente, cada atividade era colocada em uma pasta dentro da branch `main`.
 | 09 - HERANÇA      | tp1/bim2/atv-heranca      |
 | 10 - POLIMORFISMO | tp1/bim2/atv-polimorfismo |
 | 11 - ASSOCIACAO   | tp1/bim2/atv-associacao   |
+| 00 - REVISAO      | tp2/bim1/revisao-tp1      |
 
 # Como ver atividade
 
