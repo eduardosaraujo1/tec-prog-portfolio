@@ -1,1 +1,2 @@
-rootProject.name = "RevisaoTP1"
+rootProject.name = "treino"
+include("app");
