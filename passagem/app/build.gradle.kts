@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "br.edu.fatecpg.passagem.view.App"
 }
 
 tasks.named<Test>("test") {

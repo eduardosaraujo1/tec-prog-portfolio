@@ -3,13 +3,22 @@
  */
 package br.edu.fatecpg.passagem.view;
 
+import br.edu.fatecpg.passagem.model.*;
+
 public class App {
 
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
     public static void main(String[] args) {
-        System.out.println("Hello, world!");
+        Voo v1 = new Voo("010", "Dallas, Texas", "Fatec Praia Grande", 700, 80);
+        Voo v2 = new Voo("382", "GRU Airport", "London, GB", 900, 100);
+
+        Aeroporto ae = new Aeroporto();
+        ae.add(v1);
+        ae.add(v2);
+
+        ae.exibirVoos();
+        System.out.println(v1.getAssentosDisponiveis());
+
+        v2.realizarReserva(20);
+        System.out.println(v2.verificarDisponibilidade(90));
     }
 }
