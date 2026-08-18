@@ -14,6 +14,10 @@ public class HistoricoEndereco {
     }
 
     public void exibirHistorico() {
+        if (historico.isEmpty()) {
+            System.out.println("Não há nenhum cep consultado.");
+            return;
+        }
         for (Endereco e : historico) {
             System.out.println(e);
         }
