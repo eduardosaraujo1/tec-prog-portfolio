@@ -3,9 +3,11 @@ package br.edu.fatecpg.pokemon;
 import br.edu.fatecpg.pokemon.data.PokemonRepository;
 import br.edu.fatecpg.pokemon.data.service.PokeApiService;
 import br.edu.fatecpg.pokemon.data.service.PostgresConnection;
+import br.edu.fatecpg.pokemon.ui.RouterView;
 import com.google.gson.Gson;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
 
@@ -25,15 +27,22 @@ public class Main {
                 "admin",
                 "admin",
                 "admin"
-            )
+            );
+            Scanner scanner = new Scanner(System.in)
         ) {
             PokemonRepository pr = new PokemonRepository(
                 new PokeApiService(new Gson()),
                 connection
             );
+
+            RouterView router = new RouterView(scanner, pr);
+            router.loop();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println(
+                "Não foi possível conectar ao banco de dados. Verifique se o " +
+                    "PostgreSQL está em execução e se as credenciais estão corretas."
+            );
+            System.out.println("Detalhes: " + e.getMessage());
         }
     }
 }

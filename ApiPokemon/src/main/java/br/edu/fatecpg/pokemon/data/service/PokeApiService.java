@@ -5,6 +5,8 @@ import br.edu.fatecpg.pokemon.data.model.api.PokemonListEntry;
 import br.edu.fatecpg.pokemon.data.model.api.PokemonListResponse;
 import br.edu.fatecpg.pokemon.domain.exceptions.PokeApiException;
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,21 +27,6 @@ public class PokeApiService {
         this.client = HttpClient.newHttpClient();
     }
 
-    private HttpResponse<String> getRequest(String url)
-        throws PokeApiException {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build();
-            return this.client.send(
-                request,
-                HttpResponse.BodyHandlers.ofString()
-            );
-        } catch (IOException | InterruptedException e) {
-            throw new PokeApiException(e.getMessage());
-        }
-    }
-
     public List<PokemonListEntry> listPokemon(int limit, int offset)
         throws PokeApiException {
         HttpResponse<String> response = getRequest(
@@ -48,19 +35,55 @@ public class PokeApiService {
                 offset
             )
         );
-        PokemonListResponse serializado = gson.fromJson(
-            response.body(),
-            PokemonListResponse.class
-        );
 
-        // Usa Streams (coisa que vamos ver no próximo bimestre ou numa próxima aula) para transformar em array de string
-        return serializado.results();
+        return parseJson(response.body(), PokemonListResponse.class).results();
     }
 
     public Pokemon getPokemonDetail(String name) throws PokeApiException {
         HttpResponse<String> response = getRequest(
             "https://pokeapi.co/api/v2/pokemon/" + name
         );
-        return gson.fromJson(response.body(), Pokemon.class);
+        return parseJson(response.body(), Pokemon.class);
+    }
+
+    private HttpResponse<String> getRequest(String url)
+        throws PokeApiException {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
+            HttpResponse<String> response = this.client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+            );
+
+            if (response.statusCode() < 200 || response.statusCode() > 299) {
+                throw new PokeApiException(
+                    "Received unsuccessful HTTP status code '%d'".formatted(
+                        response.statusCode()
+                    )
+                );
+            }
+
+            return response;
+        } catch (IOException | InterruptedException e) {
+            throw new PokeApiException(e.getMessage());
+        }
+    }
+
+    private <T> T parseJson(String json, Class<T> type)
+        throws PokeApiException {
+        try {
+            return gson.fromJson(json, type);
+        } catch (
+            JsonSyntaxException
+            | JsonIOException
+            | IllegalStateException e
+        ) {
+            throw new PokeApiException(
+                "Unexpected error when parsing API response: " + e.getMessage()
+            );
+        }
     }
 }
