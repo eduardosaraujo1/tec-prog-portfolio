@@ -1,0 +1,367 @@
+{
+  "info": {
+    "name": "TEC Prog - Livros e Tarefas",
+    "description": "Casos de teste de testar-livros.sh e testar-tarefas.sh. Execute as requisições de cada pasta na ordem indicada, ou use o Collection Runner. Os IDs retornados na criação são salvos automaticamente. Inicie a API correspondente antes de executar sua pasta. As duas APIs usam localhost:8080 por padrão: execute-as separadamente ou configure portas diferentes e ajuste livrosBaseUrl e tarefasBaseUrl. Se o ISBN já existir, altere a variável livroIsbn antes de executar a pasta Livros. As requisições DELETE removem os registros criados pelos testes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "livrosBaseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "tarefasBaseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "livroIsbn",
+      "value": "9788535914849",
+      "type": "string"
+    },
+    {
+      "key": "livroId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tarefaId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Livros",
+      "description": "Fluxo CRUD de testar-livros.sh. Execute de cima para baixo.",
+      "item": [
+        {
+          "name": "1. Criar livro",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset('livroId');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Livro criado com ID e dados enviados', function () {",
+                  "    pm.expect(pm.response.code).to.eql(201);",
+                  "    const livro = pm.response.json();",
+                  "    pm.expect(livro.id).to.be.a('number').and.to.be.above(0);",
+                  "    pm.expect(livro).to.include(JSON.parse(pm.variables.replaceIn(pm.request.body.raw)));",
+                  "    pm.collectionVariables.set('livroId', livro.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Dom Casmurro\",\n  \"autor\": \"Machado de Assis\",\n  \"isbn\": \"{{livroIsbn}}\",\n  \"anoPublicacao\": 1899\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{livrosBaseUrl}}/livros"
+          }
+        },
+        {
+          "name": "2. Listar livros",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resposta é uma lista JSON', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{livrosBaseUrl}}/livros"
+          }
+        },
+        {
+          "name": "3. Buscar livro por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Retorna o livro criado', function () {",
+                  "    pm.expect(pm.response.json()).to.include({",
+                  "        id: Number(pm.variables.get('livroId')),",
+                  "        titulo: 'Dom Casmurro',",
+                  "        autor: 'Machado de Assis',",
+                  "        isbn: pm.variables.get('livroIsbn'),",
+                  "        anoPublicacao: 1899",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{livrosBaseUrl}}/livros/{{livroId}}"
+          }
+        },
+        {
+          "name": "4. Atualizar livro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Retorna o livro com os dados atualizados', function () {",
+                  "    const livro = pm.response.json();",
+                  "    pm.expect(livro.id).to.eql(Number(pm.variables.get('livroId')));",
+                  "    pm.expect(livro).to.include(JSON.parse(pm.variables.replaceIn(pm.request.body.raw)));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Dom Casmurro - Edição revisada\",\n  \"autor\": \"Machado de Assis\",\n  \"isbn\": \"{{livroIsbn}}\",\n  \"anoPublicacao\": 1900\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{livrosBaseUrl}}/livros/{{livroId}}"
+          }
+        },
+        {
+          "name": "5. Excluir livro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204 No Content', function () { pm.response.to.have.status(204); });",
+                  "pm.test('Resposta sem corpo', function () { pm.expect(pm.response.text()).to.eql(''); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{livrosBaseUrl}}/livros/{{livroId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tarefas",
+      "description": "Fluxo CRUD de testar-tarefas.sh, incluindo consulta após atualização e confirmação da exclusão. Execute de cima para baixo.",
+      "item": [
+        {
+          "name": "1. Criar tarefa",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset('tarefaId');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Tarefa criada com ID e dados enviados', function () {",
+                  "    pm.expect(pm.response.code).to.eql(201);",
+                  "    const tarefa = pm.response.json();",
+                  "    pm.expect(tarefa.id).to.be.a('number').and.to.be.above(0);",
+                  "    pm.expect(tarefa).to.include(JSON.parse(pm.request.body.raw));",
+                  "    pm.collectionVariables.set('tarefaId', tarefa.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Estudar Spring Boot\",\n  \"concluida\": false,\n  \"prioridade\": 3\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{tarefasBaseUrl}}/tarefas"
+          }
+        },
+        {
+          "name": "2. Listar tarefas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resposta é uma lista JSON', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{tarefasBaseUrl}}/tarefas"
+          }
+        },
+        {
+          "name": "3. Buscar tarefa por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Retorna a tarefa criada', function () {",
+                  "    pm.expect(pm.response.json()).to.include({",
+                  "        id: Number(pm.variables.get('tarefaId')),",
+                  "        descricao: 'Estudar Spring Boot',",
+                  "        concluida: false,",
+                  "        prioridade: 3",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{tarefasBaseUrl}}/tarefas/{{tarefaId}}"
+          }
+        },
+        {
+          "name": "4. Atualizar tarefa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Retorna a tarefa com os dados atualizados', function () {",
+                  "    const tarefa = pm.response.json();",
+                  "    pm.expect(tarefa.id).to.eql(Number(pm.variables.get('tarefaId')));",
+                  "    pm.expect(tarefa).to.include(JSON.parse(pm.request.body.raw));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Estudar Spring Boot e testar a API\",\n  \"concluida\": true,\n  \"prioridade\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{tarefasBaseUrl}}/tarefas/{{tarefaId}}"
+          }
+        },
+        {
+          "name": "5. Conferir tarefa atualizada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Alterações foram persistidas', function () {",
+                  "    pm.expect(pm.response.json()).to.include({",
+                  "        id: Number(pm.variables.get('tarefaId')),",
+                  "        descricao: 'Estudar Spring Boot e testar a API',",
+                  "        concluida: true,",
+                  "        prioridade: 5",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{tarefasBaseUrl}}/tarefas/{{tarefaId}}"
+          }
+        },
+        {
+          "name": "6. Excluir tarefa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204 No Content', function () { pm.response.to.have.status(204); });",
+                  "pm.test('Resposta sem corpo', function () { pm.expect(pm.response.text()).to.eql(''); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{tarefasBaseUrl}}/tarefas/{{tarefaId}}"
+          }
+        },
+        {
+          "name": "7. Confirmar exclusão da tarefa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404 Not Found', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{tarefasBaseUrl}}/tarefas/{{tarefaId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
