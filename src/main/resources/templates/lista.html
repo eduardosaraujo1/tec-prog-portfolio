@@ -23,6 +23,7 @@
 								<th scope="col">Preço</th>
 								<th scope="col">Categoria</th>
 								<th scope="col">Estoque</th>
+								<th scope="col">Ações</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -32,6 +33,12 @@
 								<td th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
 								<td th:text="${produto.categoria}">Categoria</td>
 								<td th:text="${produto.estoque}">Estoque</td>
+								<td>
+									<form th:action="@{/remover/{id}(id=${produto.id})}" method="post">
+										<button class="btn btn-danger btn-sm" type="submit"
+												th:attr="aria-label=|Remover ${produto.nome}|">Remover</button>
+									</form>
+								</td>
 							</tr>
 						</tbody>
 					</table>

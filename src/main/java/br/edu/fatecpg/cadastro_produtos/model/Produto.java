@@ -1,13 +1,20 @@
 package br.edu.fatecpg.cadastro_produtos.model;
 
+import java.util.UUID;
+
 public class Produto {
 
+	private final String id = UUID.randomUUID().toString();
 	private String nome;
 	private double preco;
 	private String categoria;
 	private int estoque;
 
 	public Produto() {
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public int getEstoque() {
