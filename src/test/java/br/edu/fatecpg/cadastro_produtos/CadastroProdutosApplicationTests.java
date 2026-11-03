@@ -57,6 +57,11 @@ class CadastroProdutosApplicationTests {
 				.andExpect(content().string(containsString("id=\"preco\" name=\"preco\"")))
 				.andExpect(content().string(containsString("step=\"0.01\" min=\"0\"")))
 				.andExpect(content().string(containsString("id=\"categoria\" name=\"categoria\"")))
+				.andExpect(content().string(containsString("<select class=\"form-select\"")))
+				.andExpect(content().string(containsString("<option value=\"Eletrônico\">Eletrônico</option>")))
+				.andExpect(content().string(containsString("<option value=\"Vestuário\">Vestuário</option>")))
+				.andExpect(content().string(containsString("<option value=\"Alimento\">Alimento</option>")))
+				.andExpect(content().string(containsString("<option value=\"Outros\">Outros</option>")))
 				.andExpect(content().string(containsString("href=\"/lista\"")));
 	}
 
