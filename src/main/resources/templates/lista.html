@@ -22,6 +22,7 @@
 								<th scope="col">Nome</th>
 								<th scope="col">Preço</th>
 								<th scope="col">Categoria</th>
+								<th scope="col">Estoque</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -30,6 +31,7 @@
 								<td th:text="${produto.nome}">Nome</td>
 								<td th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
 								<td th:text="${produto.categoria}">Categoria</td>
+								<td th:text="${produto.estoque}">Estoque</td>
 							</tr>
 						</tbody>
 					</table>

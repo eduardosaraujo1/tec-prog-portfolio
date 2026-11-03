@@ -5,8 +5,17 @@ public class Produto {
 	private String nome;
 	private double preco;
 	private String categoria;
+	private int estoque;
 
 	public Produto() {
+	}
+
+	public int getEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(int estoque) {
+		this.estoque = estoque;
 	}
 
 	public String getNome() {
