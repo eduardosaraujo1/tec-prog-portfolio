@@ -1,9 +1,7 @@
 package br.edu.fatecpg.cadastro_produtos.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.edu.fatecpg.cadastro_produtos.model.Produto;
+import br.edu.fatecpg.cadastro_produtos.service.ProdutoStorageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,12 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProdutoController {
 
-	// A lista é compartilhada entre requisições e zerada ao reiniciar o servidor.
-	private static final List<Produto> produtos = new ArrayList<>();
+	private final ProdutoStorageService produtos;
+
+	public ProdutoController(ProdutoStorageService produtos) {
+		this.produtos = produtos;
+	}
 
 	@GetMapping("/")
 	public String index() {
@@ -39,19 +41,20 @@ public class ProdutoController {
 		if (bindingResult.hasErrors()) {
 			return "cadastrar";
 		}
-		produtos.add(produto);
+		produtos.insert(produto);
 		return "redirect:/lista";
 	}
 
 	@GetMapping("/lista")
-	public String exibirLista(Model model) {
-		model.addAttribute("produtos", produtos);
+	public String exibirLista(@RequestParam(defaultValue = "") String busca, Model model) {
+		model.addAttribute("busca", busca.strip());
+		model.addAttribute("produtos", produtos.search(busca));
 		return "lista";
 	}
 
 	@PostMapping("/remover/{id}")
 	public String removerProduto(@PathVariable String id) {
-		produtos.removeIf(produto -> produto.getId().equals(id));
+		produtos.removeByUuid(id);
 		return "redirect:/lista";
 	}
 }

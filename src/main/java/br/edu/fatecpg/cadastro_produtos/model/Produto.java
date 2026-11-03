@@ -1,10 +1,23 @@
 package br.edu.fatecpg.cadastro_produtos.model;
 
 import java.util.UUID;
+import java.time.Instant;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Produto {
 
-	private final String id = UUID.randomUUID().toString();
+	@Id
+	@Column(length = 36, updatable = false)
+	private String id = UUID.randomUUID().toString();
+
+	// Preserva a ordem de cadastro sem depender da ordenação dos UUIDs no banco.
+	@Column(nullable = false, updatable = false)
+	private Instant criadoEm = Instant.now();
+
 	private String nome;
 	private double preco;
 	private String categoria;

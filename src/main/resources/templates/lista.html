@@ -9,9 +9,19 @@
 <body>
 	<main class="container py-5">
 		<h1 class="mb-4">Lista de Produtos</h1>
+		<form th:action="@{/lista}" method="get" class="mb-4">
+			<label for="busca" class="form-label">Buscar por nome ou categoria</label>
+			<div class="d-flex flex-wrap gap-2">
+				<input type="search" class="form-control w-auto flex-grow-1" id="busca" name="busca"
+					   th:value="${busca}" placeholder="Digite parte do nome ou da categoria">
+				<button type="submit" class="btn btn-primary">Buscar</button>
+				<a th:href="@{/lista}" class="btn btn-outline-secondary">Limpar busca</a>
+			</div>
+		</form>
 		<div class="card">
 			<div class="card-body">
-				<div class="alert alert-info" role="alert" th:if="${#lists.isEmpty(produtos)}">
+				<div class="alert alert-info" role="alert" th:if="${#lists.isEmpty(produtos)}"
+					 th:text="${busca.isEmpty()} ? 'Nenhum produto cadastrado ainda.' : 'Nenhum produto encontrado para a busca informada.'">
 					Nenhum produto cadastrado ainda.
 				</div>
 				<div class="table-responsive" th:unless="${#lists.isEmpty(produtos)}">
