@@ -6,9 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -20,11 +19,11 @@ class CadastroProdutosApplicationTests {
 	private MockMvc mockMvc;
 
 	@Test
-	void homeRouteRendersHelloWorld() throws Exception {
+	void homeRouteRedirectsToRegistration() throws Exception {
 		mockMvc.perform(get("/"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("index"))
-				.andExpect(content().string(containsString("Hello World")));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/cadastrar"))
+				.andExpect(redirectedUrl("/cadastrar"));
 	}
 
 }
