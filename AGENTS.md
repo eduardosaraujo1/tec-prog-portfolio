@@ -9,4 +9,4 @@
 
 - Aplicação Spring Boot 4.1.2; código Java no pacote-base `br.edu.fatecpg.cadastro_produtos` e classe de entrada `CadastroProdutosApplication`.
 - Use o Maven Wrapper: `mvnw.cmd test` para os testes e `mvnw.cmd spring-boot:run` para executar no Windows.
-- Atualmente o `pom.xml` inclui apenas `spring-boot-starter` e `spring-boot-starter-test`; Web e Thymeleaf ainda não estão configurados.
+- O `pom.xml` inclui `spring-boot-starter-webmvc`, `spring-boot-starter-thymeleaf` e `spring-boot-starter-test`; a rota `/` renderiza `templates/index.html` via `HomeController`.
